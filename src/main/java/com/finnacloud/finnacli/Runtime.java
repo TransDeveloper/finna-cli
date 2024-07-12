@@ -19,7 +19,7 @@ public class Runtime {
 
     public static Boolean isSilent = false;
 
-    public Runtime(String[] arguments) throws Exception {
+    public Runtime(String[] arguments) {
         commands.add(new Help());
         commands.add(new Authenticate());
         commands.add(new Get());

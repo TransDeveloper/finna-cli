@@ -57,6 +57,4 @@ By using the Code, you agree to abide by the terms of this License.
 **TheFinnaCompany Ltd**
 *June 2024*
 
----
-
-If you have more than 50 employees or turnover more than $250,000 annually, you must purchase a commercial license. Contact [FinnaCloud Corporate](mailto:corp@finnacloud.net). 
+--- 
