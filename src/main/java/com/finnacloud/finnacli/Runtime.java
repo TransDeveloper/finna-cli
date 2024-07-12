@@ -5,6 +5,7 @@ import com.finnacloud.finnacli.commands.command.Authenticate;
 import com.finnacloud.finnacli.commands.command.Get;
 import com.finnacloud.finnacli.commands.command.Help;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class Runtime {
@@ -28,7 +29,7 @@ public class Runtime {
         System.out.printf("FinnaCloud CLI v%s\nCopyright (c) 2024 TheFinnaCompany, Ltd. All rights reserved.\n\n", version);
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         new Runtime(args);
 
         if (args.length == 0) {
@@ -43,7 +44,7 @@ public class Runtime {
                 String[] arg = String.join(" ", args).replace("--silent", "").split(" ");
                 ArrayList<String> argList = new ArrayList<>();
                 for (String s : arg) {
-                    if (!s.equals("")) {
+                    if (!s.isEmpty()) {
                         argList.add(s);
                     }
                 }

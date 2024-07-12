@@ -1,16 +1,18 @@
 package com.finnacloud.finnacli.commands;
 
+import java.io.IOException;
+
 public class CommandStruct {
-    private String command;
-    private String description;
-    private String usage;
+    private final String command;
+    private final String description;
+    private final String usage;
 
     public CommandStruct(String command, String description, String usage) {
         this.command = command.toLowerCase();
         this.description = description;
         this.usage = usage;
     }
-    public void run(String[] args) {
+    public void run(String[] args) throws IOException {
         System.out.println("Command not implemented");
     }
 

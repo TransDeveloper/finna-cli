@@ -49,8 +49,8 @@ public class Get extends CommandStruct implements CommandInterface {
         try {
             Resources resources = (Resources) applications.getApis().get("resources").getDeclaredConstructor().newInstance();
             resources.getResources(5, 0, null);
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            e.printStackTrace();
+        } catch (Exception e){
+            System.out.printf("An error occurred while making the request: %s%n", e.getMessage());
         }
     }
 }
