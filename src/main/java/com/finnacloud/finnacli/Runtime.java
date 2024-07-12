@@ -29,7 +29,7 @@ public class Runtime {
         System.out.printf("FinnaCloud CLI v%s\nCopyright (c) 2024 TheFinnaCompany, Ltd. All rights reserved.\n\n", version);
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         new Runtime(args);
 
         if (args.length == 0) {

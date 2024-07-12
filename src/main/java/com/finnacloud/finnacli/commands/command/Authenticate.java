@@ -4,6 +4,7 @@ import com.finnacloud.finnacli.Constants;
 import com.finnacloud.finnacli.Runtime;
 import com.finnacloud.finnacli.commands.CommandInterface;
 import com.finnacloud.finnacli.commands.CommandStruct;
+import com.finnacloud.finnacli.utils.AuthenticationHandler;
 import com.finnacloud.finnacli.utils.HttpsRequestBuilder;
 
 import java.io.*;
@@ -15,7 +16,7 @@ public class Authenticate extends CommandStruct implements CommandInterface {
 
     @Override
     public void run(String[] args) throws IOException {
-        if (args.length != 2) {
+        if (args.length < 2) {
             System.out.println("Invalid number of arguments provided. Use 'help login' to list all commands.");
             return;
         }
@@ -26,7 +27,25 @@ public class Authenticate extends CommandStruct implements CommandInterface {
                 break;
             case "token":
                 System.out.println("Continuing with Token Authentication...");
-                // TODO: Finish token authentication
+                // get all input after args[1]
+                StringBuilder token = new StringBuilder();
+                for (int i = 2; i < args.length; i++) {
+                    token.append(args[i]).append(" ");
+                }
+
+                if (token.toString().trim().isEmpty()) {
+                    System.out.println("No token provided.");
+                    return;
+                }
+
+                try {
+                    if (AuthenticationHandler.saveToken(token.toString().trim()) && !Runtime.isSilent) {
+                        System.out.println("Token saved successfully.");
+                        System.out.println("Authentication successful.");
+                    }
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
                 break;
             default:
                 System.out.println("Unsupported authentication method.");
@@ -62,15 +81,10 @@ public class Authenticate extends CommandStruct implements CommandInterface {
     private void processAuthenticationResponse(String responseBody) {
         try {
             String token = responseBody.split("\"")[3]; // Assuming the response format is consistent
-            File tokenFile = new File(System.getProperty("user.home") + "/.finnacloud/.token");
-            if (!tokenFile.exists()) {
-                tokenFile.getParentFile().mkdirs();
-                tokenFile.createNewFile();
+            if (AuthenticationHandler.saveToken(token) && !Runtime.isSilent) {
+                System.out.println("Token saved successfully.");
+                System.out.println("Authentication successful.");
             }
-            try (FileWriter fileWriter = new FileWriter(tokenFile)) {
-                fileWriter.write(token);
-            }
-            System.out.println("Authentication successful.");
         } catch (Exception e) {
             System.out.printf("An error occurred while processing the authentication response: %s%n", e.getMessage());
         }
