@@ -8,7 +8,6 @@ public class Applications {
     private HashMap<String, Class> apis = new HashMap<>();
 
     public Applications() {
-        // add Resource.java to the list of APIs
         apis.put("resources", Resources.class);
     }
 

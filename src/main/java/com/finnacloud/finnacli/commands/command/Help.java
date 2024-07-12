@@ -27,7 +27,7 @@ public class Help extends CommandStruct implements CommandInterface {
                     break;
                 }
                 if (i == Runtime.commands.size()) {
-                    System.out.println("Help> The command '" + args[1] + "' was not found.");
+                    System.out.println("The command '" + args[1] + "' was not found.");
                 }
             }
         }

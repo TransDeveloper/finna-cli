@@ -1,34 +1,44 @@
 package com.finnacloud.finnacli.utils;
 
-import java.io.*;
+import com.finnacloud.finnacli.Constants;
+import java.io.IOException;
 
 public class AuthenticationHandler {
-    public static String getToken() throws Exception {
-         File file = new File(System.getProperty("user.home") + "/.finnacloud/.token");
-         if (!file.exists()) {
-            return null;
-         }
-        // get text from file
-        return (new BufferedReader(new FileReader(file))).readLine();
+    private static YAMLConfiguration cfm = null;
+    private static AuthenticationHandler instance = null;
+    private static String cachedToken = null;
+
+    private AuthenticationHandler() {
+        try {
+            ConfigurationManager configurationManager = new ConfigurationManager(Constants.BASE_CONFIG_FILE);
+            cfm = configurationManager.getSettings();
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to load settings", e);
+        }
     }
 
-    public static Boolean saveToken(String token) throws Exception {
-        File file = new File(System.getProperty("user.home") + "/.finnacloud/.token");
-        if (!file.exists()) {
-            file.getParentFile().mkdirs();
-            file.createNewFile();
+    public static synchronized AuthenticationHandler getInstance() {
+        if (instance == null) {
+            instance = new AuthenticationHandler();
         }
-        // write token to file
-        BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-        writer.write(token);
-        writer.close();
-        return true;
+        return instance;
     }
 
-    public static void deleteToken() throws Exception {
-        File file = new File(System.getProperty("user.home") + "/.finnacloud/.token");
-        if (file.exists()) {
-            file.delete();
+    public String getToken() throws Exception {
+        if (cachedToken == null) {
+            cachedToken = (String) cfm.get("token");
         }
+        return cachedToken;
+    }
+
+    public void saveToken(String token) throws Exception {
+        cfm.set("token", token);
+        cfm.save();
+        cachedToken = token; // Update the cached token
+    }
+
+    public void deleteToken() throws Exception {
+        cfm.delete("token");
+        cachedToken = null; // Clear the cached token
     }
 }

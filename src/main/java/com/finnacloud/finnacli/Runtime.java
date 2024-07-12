@@ -4,9 +4,13 @@ import com.finnacloud.finnacli.commands.CommandStruct;
 import com.finnacloud.finnacli.commands.command.Authenticate;
 import com.finnacloud.finnacli.commands.command.Get;
 import com.finnacloud.finnacli.commands.command.Help;
+import com.finnacloud.finnacli.utils.YAMLConfiguration;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Runtime {
     private static Runtime runtime;
@@ -15,11 +19,10 @@ public class Runtime {
 
     public static Boolean isSilent = false;
 
-    public Runtime(String[] arguments) {
+    public Runtime(String[] arguments) throws Exception {
         commands.add(new Help());
         commands.add(new Authenticate());
         commands.add(new Get());
-        // example commands added to arraylist cmdstrct
 
         String args = String.join(" ", arguments);
         if (args.contains("--silent")) {
@@ -33,7 +36,7 @@ public class Runtime {
         new Runtime(args);
 
         if (args.length == 0) {
-            System.out.println("No command provided. Use 'help' to list all commands.");
+            System.out.println("No command provided. Use 'help [command]' to get help for a specific command.");
             return;
         }
 
@@ -53,12 +56,12 @@ public class Runtime {
                 break;
             }
             if (i == Runtime.commands.size()) {
-                System.out.println("The command '" + args[0] + "' was not found. Use 'help' to list all commands.");
+                System.out.println("The command '" + args[0] + "' was not found. Use 'help [command]' to get help for a specific command.");
             }
         }
     }
 
-    public static Runtime getInstance() {
+    public static Runtime getInstance() throws Exception {
         if (runtime == null) {
             runtime = new Runtime(new String[]{});
         }

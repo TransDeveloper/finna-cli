@@ -5,14 +5,18 @@ import com.finnacloud.finnacli.Runtime;
 import com.finnacloud.finnacli.commands.CommandInterface;
 import com.finnacloud.finnacli.commands.CommandStruct;
 import com.finnacloud.finnacli.utils.AuthenticationHandler;
+import com.finnacloud.finnacli.utils.ConfigurationManager;
 import com.finnacloud.finnacli.utils.HttpsRequestBuilder;
+import com.finnacloud.finnacli.utils.YAMLConfiguration;
 
 import java.io.*;
 
 public class Authenticate extends CommandStruct implements CommandInterface {
     public Authenticate() {
-        super("login", "Authenticate with the FinnaCloud API.", "login {API_KEY}");
+        super("login", "Authenticate with the FinnaCloud API.", "login {token {API_KEY}/internal}");
     }
+
+    private YAMLConfiguration cfm;
 
     @Override
     public void run(String[] args) throws IOException {
@@ -20,13 +24,18 @@ public class Authenticate extends CommandStruct implements CommandInterface {
             System.out.println("Invalid number of arguments provided. Use 'help login' to list all commands.");
             return;
         }
+        ConfigurationManager configurationManager = new ConfigurationManager(Constants.BASE_CONFIG_FILE);
+        cfm = configurationManager.getSettings();
+
+//        System.out.println(cfm.get("hello"));
 
         switch (args[1]) {
             case "internal":
+                if (!Runtime.isSilent) System.out.println("Continuing with Internal SSO");
                 internalAuthentication();
                 break;
             case "token":
-                System.out.println("Continuing with Token Authentication...");
+                if (!Runtime.isSilent) System.out.println("Continuing with Token Authentication...");
                 // get all input after args[1]
                 StringBuilder token = new StringBuilder();
                 for (int i = 2; i < args.length; i++) {
@@ -39,9 +48,9 @@ public class Authenticate extends CommandStruct implements CommandInterface {
                 }
 
                 try {
-                    if (AuthenticationHandler.saveToken(token.toString().trim()) && !Runtime.isSilent) {
+                    Constants.authenticationHandler.saveToken(token.toString().trim());
+                    if (!Runtime.isSilent) {
                         System.out.println("Token saved successfully.");
-                        System.out.println("Authentication successful.");
                     }
                 } catch (Exception e) {
                     throw new RuntimeException(e);
@@ -53,7 +62,7 @@ public class Authenticate extends CommandStruct implements CommandInterface {
         }
     }
 
-    private void internalAuthentication() throws IOException {
+    private void internalAuthentication() {
         if (!Runtime.isSilent) {
             System.out.println("Continuing with Internal Authentication...");
         }
@@ -81,7 +90,8 @@ public class Authenticate extends CommandStruct implements CommandInterface {
     private void processAuthenticationResponse(String responseBody) {
         try {
             String token = responseBody.split("\"")[3]; // Assuming the response format is consistent
-            if (AuthenticationHandler.saveToken(token) && !Runtime.isSilent) {
+            Constants.authenticationHandler.saveToken(token);
+            if (!Runtime.isSilent) {
                 System.out.println("Token saved successfully.");
                 System.out.println("Authentication successful.");
             }
