@@ -54,11 +54,4 @@ public class Runtime {
             }
         }
     }
-
-    public static Runtime getInstance() throws Exception {
-        if (runtime == null) {
-            runtime = new Runtime(new String[]{});
-        }
-        return runtime;
-    }
 }
