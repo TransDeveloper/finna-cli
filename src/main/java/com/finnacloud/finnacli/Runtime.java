@@ -4,13 +4,7 @@ import com.finnacloud.finnacli.commands.CommandStruct;
 import com.finnacloud.finnacli.commands.command.Authenticate;
 import com.finnacloud.finnacli.commands.command.Get;
 import com.finnacloud.finnacli.commands.command.Help;
-import com.finnacloud.finnacli.utils.YAMLConfiguration;
-
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Runtime {
     private static Runtime runtime;
